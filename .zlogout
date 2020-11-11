@@ -1,1 +1,0 @@
-/home/plebsenator/.zprezto/runcoms/zlogout
