@@ -57,7 +57,7 @@ local function run_once(cmd_arr)
     end
 end
 
-run_once({ "urxvtd", "unclutter -root" }) -- entries must be separated by commas
+run_once({ "alacritty", "unclutter -root" }) -- entries must be separated by commas
 
 -- This function implements the XDG autostart specification
 --[[
@@ -94,7 +94,7 @@ local vi_focus     = false -- vi-like client focus - https://github.com/lcpz/awe
 local cycle_prev   = true -- cycle trough all previous client or just the first -- https://github.com/lcpz/awesome-copycats/issues/274
 local editor       = os.getenv("EDITOR") or "vim"
 local gui_editor   = os.getenv("GUI_EDITOR") or "gvim"
-local browser      = os.getenv("BROWSER") or "firefox"
+local browser      = os.getenv("BROWSER") or "chromium"
 local scrlocker    = "slock"
 
 awful.util.terminal = terminal
@@ -107,7 +107,7 @@ awful.layout.layouts = {
     awful.layout.suit.tile.top,
     --awful.layout.suit.fair,
     --awful.layout.suit.fair.horizontal,
-    --awful.layout.suit.spiral,
+    awful.layout.suit.spiral,
     --awful.layout.suit.spiral.dwindle,
     --awful.layout.suit.max,
     --awful.layout.suit.max.fullscreen,
@@ -198,17 +198,28 @@ local myawesomemenu = {
     { "restart", awesome.restart },
     { "quit", function() awesome.quit() end }
 }
-awful.util.mymainmenu = freedesktop.menu.build({
-    icon_size = beautiful.menu_height or dpi(16),
-    before = {
-        { "Awesome", myawesomemenu, beautiful.awesome_icon },
+
+local internetmenu = {
+	{"Browser", "chromium"},
+	{"Discord", "discord"}
+}
+
+local multimedia = {
+	{"Spotify", "spotify"},
+	{"VLC", "vlc"}
+}
+
+awful.util.mymainmenu =awful.menu({items = {{"Awesome",myawesomemenu, beautiful.awesome_icon},{"Terminal", terminal},{"Internet", internetmenu},{"Multimedia", multimedia}}}) --freedesktop.menu.build({
+    --icon_size = beautiful.menu_height or dpi(16),
+    --before = {
+      --  { "Awesome", myawesomemenu, beautiful.awesome_icon },
         -- other triads can be put here
-    },
-    after = {
-        { "Open terminal", terminal },
+   -- },
+   -- after = {
+     --   { "Open terminal", terminal },
         -- other triads can be put here
-    }
-})
+   -- }
+--})
 -- hide menu when mouse leaves it
 --awful.util.mymainmenu.wibox:connect_signal("mouse::leave", function() awful.util.mymainmenu:hide() end)
 

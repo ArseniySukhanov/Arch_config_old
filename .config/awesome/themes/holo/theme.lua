@@ -10,6 +10,8 @@ local lain  = require("lain")
 local awful = require("awful")
 local wibox = require("wibox")
 local dpi   = require("beautiful.xresources").apply_dpi
+local volumearc_widget = require("awesome-wm-widgets.volumearc-widget.volumearc")
+local batteryarc_widget = require("awesome-wm-widgets.batteryarc-widget.batteryarc")
 
 local string, os = string, os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
@@ -18,8 +20,8 @@ local theme                                     = {}
 theme.default_dir                               = require("awful.util").get_themes_dir() .. "default"
 theme.icon_dir                                  = os.getenv("HOME") .. "/.config/awesome/themes/holo/icons"
 theme.wallpaper                                 = os.getenv("HOME") .. "/.config/awesome/themes/holo/wall.png"
-theme.font                                      = "Roboto Bold 10"
-theme.taglist_font                              = "Roboto Condensed Regular 8"
+--theme.font                                      = "Roboto Bold 10"
+--theme.taglist_font                              = "Roboto Condensed Regular 8"
 theme.fg_normal                                 = "#FFFFFF"
 theme.fg_focus                                  = "#0099CC"
 theme.bg_focus                                  = "#303030"
@@ -28,7 +30,7 @@ theme.fg_urgent                                 = "#CC9393"
 theme.bg_urgent                                 = "#006B8E"
 theme.border_width                              = dpi(3)
 theme.border_normal                             = "#252525"
-theme.border_focus                              = "#0099CC"
+theme.border_focus                              = "#FFFFFF"
 theme.taglist_fg_focus                          = "#FFFFFF"
 theme.tasklist_bg_normal                        = "#222222"
 theme.tasklist_fg_focus                         = "#4CB7DB"
@@ -334,25 +336,27 @@ function theme.at_screen_connect(s)
             spr_small,
             s.mypromptbox,
         },
-        nil, -- Middle widget
+		clockwidget, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             wibox.widget.systray(),
             --theme.mail.widget,
             --bat.widget,
-            spr_right,
-            musicwidget,
-            bar,
-            prev_icon,
-            next_icon,
-            stop_icon,
-            play_pause_icon,
-            bar,
-            mpd_icon,
-            bar,
-            spr_very_small,
-            volumewidget,
-            spr_left,
+	    batteryarc_widget({show_current_level = true,}),
+	    volumearc_widget(),
+            --spr_right,
+            --musicwidget,
+            --bar,
+            --prev_icon,
+            --next_icon,
+            --stop_icon,
+            --play_pause_icon,
+            --bar,
+            --mpd_icon,
+            --bar,
+            --spr_very_small,
+            --volumewidget,
+            --spr_left,
         },
     }
 

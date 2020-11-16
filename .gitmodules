@@ -7,3 +7,6 @@
 [submodule ".tmux/plugins/nord-tmux"]
 	path = .tmux/plugins/nord-tmux
 	url = https://github.com/arcticicestudio/nord-tmux
+[submodule "/home/plebsenator/.config/awesome/awesome-wm-widgets"]
+	path = /home/plebsenator/.config/awesome/awesome-wm-widgets
+	url = https://github.com/streetturtle/awesome-wm-widgets
