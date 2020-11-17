@@ -72,8 +72,12 @@ theme.layout_max                                = theme.icon_dir .. "/max.png"
 theme.layout_fullscreen                         = theme.icon_dir .. "/fullscreen.png"
 theme.layout_magnifier                          = theme.icon_dir .. "/magnifier.png"
 theme.layout_floating                           = theme.icon_dir .. "/floating.png"
-theme.tasklist_plain_task_name                  = true
-theme.tasklist_disable_icon                     = true
+theme.tasklist_align				= "center"
+--theme.tasklist_plain_task_name                  = true
+theme.tasklist_disable_icon                     = false
+theme.tasklist_disable_task_name		= true
+theme.tasklist_shape				= gears.shape.circle
+theme.wibar_stretch				= true
 theme.useless_gap                               = dpi(4)
 theme.titlebar_close_button_normal              = theme.default_dir.."/titlebar/close_normal.png"
 theme.titlebar_close_button_focus               = theme.default_dir.."/titlebar/close_focus.png"
@@ -103,11 +107,11 @@ local blue   = "#80CCE6"
 local space3 = markup.font("Roboto 3", " ")
 
 -- Clock
-local mytextclock = wibox.widget.textclock(markup("#FFFFFF", space3 .. "%H:%M   " .. markup.font("Roboto 4", " ")))
+local mytextclock = wibox.widget.textclock(markup("#FFFFFF", "%H:%M" .. markup.font("Roboto 4", " ")))
 mytextclock.font = theme.font
 local clock_icon = wibox.widget.imagebox(theme.clock)
 local clockbg = wibox.container.background(mytextclock, theme.bg_focus, gears.shape.rectangle)
-local clockwidget = wibox.container.margin(clockbg, dpi(0), dpi(3), dpi(5), dpi(5))
+local clockwidget = wibox.container.margin(clockbg, dpi(2), dpi(2), dpi(5), dpi(5))
 
 -- Calendar
 local mytextcalendar = wibox.widget.textclock(markup.fontfg(theme.font, "#FFFFFF", space3 .. "%d %b " .. markup.font("Roboto 5", " ")))
@@ -327,6 +331,7 @@ function theme.at_screen_connect(s)
     -- Add widgets to the wibox
     s.mywibox:setup {
         layout = wibox.layout.align.horizontal,
+	expand = "none",
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
             first,
@@ -336,7 +341,10 @@ function theme.at_screen_connect(s)
             spr_small,
             s.mypromptbox,
         },
-		clockwidget, -- Middle widget
+	{	
+		layout = wibox.layout.flex.horizontal,
+		mytextclock, -- Middle widget
+	},
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             wibox.widget.systray(),
@@ -385,8 +393,6 @@ function theme.at_screen_connect(s)
             calendar_icon,
             calendarwidget,
             bottom_bar,
-            clock_icon,
-            clockwidget,
         },
     }
 end
