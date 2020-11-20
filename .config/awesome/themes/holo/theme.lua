@@ -22,18 +22,18 @@ theme.icon_dir                                  = os.getenv("HOME") .. "/.config
 theme.wallpaper                                 = os.getenv("HOME") .. "/.config/awesome/themes/holo/wall.png"
 --theme.font                                      = "Roboto Bold 10"
 --theme.taglist_font                              = "Roboto Condensed Regular 8"
-theme.fg_normal                                 = "#FFFFFF"
-theme.fg_focus                                  = "#0099CC"
+theme.fg_normal                                 = "#D8DEE9"
+theme.fg_focus                                  = "#5E81AC"
 theme.bg_focus                                  = "#303030"
 theme.bg_normal                                 = "#242424"
-theme.fg_urgent                                 = "#CC9393"
-theme.bg_urgent                                 = "#006B8E"
+theme.fg_urgent                                 = "#BF616A"
+theme.bg_urgent                                 = "#81A1C1"
 theme.border_width                              = dpi(3)
 theme.border_normal                             = "#252525"
-theme.border_focus                              = "#FFFFFF"
+theme.border_focus                              = "#302C47"
 theme.taglist_fg_focus                          = "#FFFFFF"
 theme.tasklist_bg_normal                        = "#222222"
-theme.tasklist_fg_focus                         = "#4CB7DB"
+theme.tasklist_bg_focus                         = "#302C47"
 theme.menu_height                               = dpi(20)
 theme.menu_width                                = dpi(160)
 theme.menu_icon_size                            = dpi(32)
@@ -73,10 +73,10 @@ theme.layout_fullscreen                         = theme.icon_dir .. "/fullscreen
 theme.layout_magnifier                          = theme.icon_dir .. "/magnifier.png"
 theme.layout_floating                           = theme.icon_dir .. "/floating.png"
 theme.tasklist_align				= "center"
---theme.tasklist_plain_task_name                  = true
+theme.tasklist_plain_task_name                  = true
 theme.tasklist_disable_icon                     = false
 theme.tasklist_disable_task_name		= true
-theme.tasklist_shape				= gears.shape.circle
+theme.tasklist_shape				= gears.shape.rectangle
 theme.wibar_stretch				= true
 theme.useless_gap                               = dpi(4)
 theme.titlebar_close_button_normal              = theme.default_dir.."/titlebar/close_normal.png"
@@ -303,7 +303,7 @@ function theme.at_screen_connect(s)
     gears.wallpaper.maximized(wallpaper, s, true)
 
     -- Tags
-    awful.tag(awful.util.tagnames, s, awful.layout.layouts)
+    awful.tag(awful.util.tagnames, s, awful.layout.layouts[6])
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -323,7 +323,61 @@ function theme.at_screen_connect(s)
     s.mytag = wibox.container.margin(mytaglistcont, dpi(0), dpi(0), dpi(5), dpi(5))
 
     -- Create a tasklist widget
-    s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons, { bg_focus = theme.bg_focus, shape = gears.shape.rectangle, shape_border_width = 5, shape_border_color = theme.tasklist_bg_normal, align = "center" })
+   -- s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons, { bg_focus = theme.bg_focus, shape = gears.shape.rectangle, shape_border_width = 5, shape_border_color = theme.tasklist_bg_normal, align = "center" },nil,wibox.layout.fixed.vertical())
+
+s.mytasklist = awful.widget.tasklist {
+	screen   = s,
+	filter   = awful.widget.tasklist.filter.currenttags,
+	buttons  = tasklist_buttons,
+	layout   = {
+		spacing_widget = {
+		{
+			forced_width  = 5,
+			forced_height = 5,
+			thickness     = 1,
+			color         = '#777777',
+			widget        = wibox.widget.separator
+			},
+		valign = 'center',
+		halign = 'center',
+		widget = wibox.container.place,
+		},
+		spacing = 1,
+		layout  = wibox.layout.fixed.vertical
+		},
+-- Notice that there is *NO* wibox.wibox prefix, it is a template,
+--     -- not a widget instance.
+		widget_template = {
+                 {
+			 
+				 wibox.widget.base.make_widget(),
+		--	forced_height = 5,
+			forced_width  = 5,
+			id            = 'background_role',
+			widget        = wibox.container.background,
+			
+			},
+
+					
+			{	{
+				id     = 'clienticon',
+				widget = awful.widget.clienticon,
+				},
+		--	margins = 5,
+			right = 5,
+			top = 5,
+			widget  = wibox.container.margin,
+		
+
+	},
+		nil,
+		create_callback = function(self, c, index, objects) --luacheck: no unused args
+			self:get_children_by_id('clienticon')[1].client = c
+		end,
+		layout = wibox.layout.align.horizontal,
+		},
+		
+	}
 
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "top", screen = s, height = dpi(32) })
@@ -334,6 +388,7 @@ function theme.at_screen_connect(s)
 	expand = "none",
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
+	    mylauncher,
             first,
             s.mytag,
             spr_small,
@@ -369,31 +424,18 @@ function theme.at_screen_connect(s)
     }
 
     -- Create the bottom wibox
-    s.mybottomwibox = awful.wibar({ position = "bottom", screen = s, border_width = dpi(0), height = dpi(32) })
-    s.borderwibox = awful.wibar({ position = "bottom", screen = s, height = dpi(1), bg = theme.fg_focus, x = dpi(0), y = dpi(33)})
+    s.myleftwibox = awful.wibar({ position = "left", screen = s, border_width = dpi(0), width = dpi(44) })
+ --   s.borderwibox = awful.wibar({ position = "left", screen = s, width = dpi(1), bg = theme.fg_focus, x = dpi(44), y = dpi(0)})
 
     -- Add widgets to the bottom wibox
-    s.mybottomwibox:setup {
-        layout = wibox.layout.align.horizontal,
-        { -- Left widgets
-            layout = wibox.layout.fixed.horizontal,
-            mylauncher,
-        },
+    s.myleftwibox:setup {
+        layout = wibox.layout.align.vertical,nil,
+       -- { -- Left widgets
+         --   layout = wibox.layout.fixed.horizontal,
+         --   mylauncher,
+       -- },
         s.mytasklist, -- Middle widget
-        { -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
-            spr_bottom_right,
-            netdown_icon,
-            networkwidget,
-            netup_icon,
-            bottom_bar,
-            cpu_icon,
-            cpuwidget,
-            bottom_bar,
-            calendar_icon,
-            calendarwidget,
-            bottom_bar,
-        },
+        nil,
     }
 end
 

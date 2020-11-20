@@ -98,7 +98,7 @@ local browser      = os.getenv("BROWSER") or "chromium"
 local scrlocker    = "slock"
 
 awful.util.terminal = terminal
-awful.util.tagnames = { "1", "2", "3", "4", "5" }
+awful.util.tagnames = {"Main", "Social", "*", "**"}
 awful.layout.layouts = {
     awful.layout.suit.floating,
     awful.layout.suit.tile,
@@ -177,6 +177,7 @@ awful.util.tasklist_buttons = my_table.join(
     awful.button({ }, 5, function () awful.client.focus.byidx(-1) end)
 )
 
+
 lain.layout.termfair.nmaster           = 3
 lain.layout.termfair.ncol              = 1
 lain.layout.termfair.center.nmaster    = 3
@@ -209,7 +210,7 @@ local multimedia = {
 	{"VLC", "vlc"}
 }
 
-awful.util.mymainmenu =awful.menu({items = {{"Awesome",myawesomemenu, beautiful.awesome_icon},{"Terminal", terminal},{"Internet", internetmenu},{"Multimedia", multimedia}}}) --freedesktop.menu.build({
+awful.util.mymainmenu = awful.menu({items = {{"Awesome", myawesomemenu, beautiful.awesome_icon},{"Terminal", terminal},{"Internet", internetmenu},{"Multimedia", multimedia}}}) --freedesktop.menu.build({
     --icon_size = beautiful.menu_height or dpi(16),
     --before = {
       --  { "Awesome", myawesomemenu, beautiful.awesome_icon },
@@ -221,7 +222,9 @@ awful.util.mymainmenu =awful.menu({items = {{"Awesome",myawesomemenu, beautiful.
    -- }
 --})
 -- hide menu when mouse leaves it
---awful.util.mymainmenu.wibox:connect_signal("mouse::leave", function() awful.util.mymainmenu:hide() end)
+awful.util.mymainmenu.wibox:connect_signal("mouse::leave", function() awful.util.mymainmenu:hide() end)
+
+
 
 --menubar.utils.terminal = terminal -- Set the Menubar terminal for applications that require it
 -- }}}
@@ -570,8 +573,7 @@ globalkeys = my_table.join(
               end,
               {description = "lua execute prompt", group = "awesome"})
     --]]
-)
-
+    )
 clientkeys = my_table.join(
     awful.key({ altkey, "Shift"   }, "m",      lain.util.magnify_client,
               {description = "magnify client", group = "client"}),
@@ -703,12 +705,6 @@ awful.rules.rules = {
     { rule_any = { type = { "dialog", "normal" } },
       properties = { titlebars_enabled = true } },
 
-    -- Set Firefox to always map on the first tag on screen 1.
-    { rule = { class = "Firefox" },
-      properties = { screen = 1, tag = awful.util.tagnames[1] } },
-
-    { rule = { class = "Gimp", role = "gimp-image-window" },
-          properties = { maximized = true } },
 }
 -- }}}
 
