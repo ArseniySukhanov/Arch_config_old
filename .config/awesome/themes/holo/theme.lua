@@ -106,6 +106,9 @@ local markup = lain.util.markup
 local blue   = "#80CCE6"
 local space3 = markup.font("Roboto 3", " ")
 
+-- Keyboard layout
+local mykeyboardlayout = awful.widget.keyboardlayout()
+
 -- Clock
 local mytextclock = wibox.widget.textclock(markup("#FFFFFF", "%H:%M" .. markup.font("Roboto 4", " ")))
 mytextclock.font = theme.font
@@ -405,8 +408,7 @@ s.mytasklist = awful.widget.tasklist {
             wibox.widget.systray(),
             --theme.mail.widget,
             --bat.widget,
-	    batteryarc_widget({show_current_level = true,}),
-	    volumearc_widget(),
+	    mykeyboardlayout,
             --spr_right,
             --musicwidget,
             --bar,

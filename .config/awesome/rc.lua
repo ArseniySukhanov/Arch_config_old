@@ -221,9 +221,14 @@ awful.util.mymainmenu = awful.menu({items = {{"Awesome", myawesomemenu, beautifu
         -- other triads can be put here
    -- }
 --})
--- hide menu when mouse leaves it
-awful.util.mymainmenu.wibox:connect_signal("mouse::leave", function() awful.util.mymainmenu:hide() end)
-
+-- hide menu when mouse leaves it and sub-menus
+awful.util.mymainmenu.wibox:connect_signal("mouse::leave", function() if awful.util.mymainmenu.active_child then
+		awful.util.mymainmenu.active_child.wibox:connect_signal("mouse::leave",function() awful.util.mymainmenu:hide() end)
+		else
+			awful.util.mymainmenu:hide()
+		end
+		end)
+--add self.active_child signal for mouse::leave
 
 
 --menubar.utils.terminal = terminal -- Set the Menubar terminal for applications that require it
