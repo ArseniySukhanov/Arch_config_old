@@ -18,8 +18,9 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
 theme.default_dir                               = require("awful.util").get_themes_dir() .. "default"
-theme.icon_dir                                  = os.getenv("HOME") .. "/.config/awesome/themes/holo/icons"
-theme.wallpaper                                 = os.getenv("HOME") .. "/.config/awesome/themes/holo/wall.png"
+theme.icon_dir                                  = os.getenv("HOME") .. "/.config/awesome/themes/mytheme/icons"
+theme.wallpaper                                 = os.getenv("HOME") .. "/.config/awesome/themes/mytheme/wall.png"
+theme.icon_theme				= "Papirus-Dark"
 --theme.font                                      = "Roboto Bold 10"
 --theme.taglist_font                              = "Roboto Condensed Regular 8"
 theme.fg_normal                                 = "#D8DEE9"
@@ -38,7 +39,7 @@ theme.menu_height                               = dpi(20)
 theme.menu_width                                = dpi(160)
 theme.menu_icon_size                            = dpi(32)
 theme.awesome_icon                              = theme.icon_dir .. "/awesome_icon_white.png"
-theme.awesome_icon_launcher                     = theme.icon_dir .. "/awesome_icon.png"
+theme.awesome_icon_launcher                     = theme.icon_dir .. "/start_button.png"
 theme.taglist_squares_sel                       = theme.icon_dir .. "/square_sel.png"
 theme.taglist_squares_unsel                     = theme.icon_dir .. "/square_unsel.png"
 theme.spr_small                                 = theme.icon_dir .. "/spr_small.png"
@@ -72,6 +73,7 @@ theme.layout_max                                = theme.icon_dir .. "/max.png"
 theme.layout_fullscreen                         = theme.icon_dir .. "/fullscreen.png"
 theme.layout_magnifier                          = theme.icon_dir .. "/magnifier.png"
 theme.layout_floating                           = theme.icon_dir .. "/floating.png"
+theme.add_button				= theme.icon_dir .. "/button_add.png"
 theme.tasklist_align				= "center"
 theme.tasklist_plain_task_name                  = true
 theme.tasklist_disable_icon                     = false
@@ -99,6 +101,8 @@ theme.titlebar_maximized_button_normal_inactive = theme.default_dir.."/titlebar/
 theme.titlebar_maximized_button_focus_inactive  = theme.default_dir.."/titlebar/maximized_focus_inactive.png"
 theme.titlebar_maximized_button_normal_active   = theme.default_dir.."/titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_active    = theme.default_dir.."/titlebar/maximized_focus_active.png"
+
+
 
 theme.musicplr = string.format("%s -e ncmpcpp", awful.util.terminal)
 
@@ -204,7 +208,7 @@ function ()
     theme.mpd.update()
 end)))
 play_pause_icon:buttons(my_table.join(awful.button({}, 1,
-function ()
+function()
     os.execute("mpc toggle")
     theme.mpd.update()
 end)))
@@ -276,6 +280,18 @@ theme.weather = lain.widget.weather({
 -- Launcher
 local mylauncher = awful.widget.button({ image = theme.awesome_icon_launcher })
 mylauncher:connect_signal("button::press", function() awful.util.mymainmenu:toggle() end)
+
+-- Additional menu
+
+tray_container = wibox.container.background()
+
+mytraywidget = wibox.widget{
+--	theme.add_button,
+	shape = gears.shape.circle,
+	widget = tray_container
+}
+-- Additional menu button
+local myaddmenu = awful.widget.button({image = theme.add_button})
 
 -- Separators
 local first = wibox.widget.textbox('<span font="Roboto 7"> </span>')
@@ -391,7 +407,7 @@ s.mytasklist = awful.widget.tasklist {
 	expand = "none",
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
-	    mylauncher,
+	    myaddmenu,
             first,
             s.mytag,
             spr_small,
@@ -409,16 +425,13 @@ s.mytasklist = awful.widget.tasklist {
             --theme.mail.widget,
             --bat.widget,
 	    mykeyboardlayout,
+	    mylauncher,
+--	    myaddmenu,
             --spr_right,
             --musicwidget,
             --bar,
             --prev_icon,
             --next_icon,
-            --stop_icon,
-            --play_pause_icon,
-            --bar,
-            --mpd_icon,
-            --bar,
             --spr_very_small,
             --volumewidget,
             --spr_left,
@@ -426,7 +439,7 @@ s.mytasklist = awful.widget.tasklist {
     }
 
     -- Create the bottom wibox
-    s.myleftwibox = awful.wibar({ position = "left", screen = s, border_width = dpi(0), width = dpi(44) })
+    s.myleftwibox = awful.wibar({ position = "left", screen = s, border_width = dpi(0), width = dpi(32) })
  --   s.borderwibox = awful.wibar({ position = "left", screen = s, width = dpi(1), bg = theme.fg_focus, x = dpi(44), y = dpi(0)})
 
     -- Add widgets to the bottom wibox
@@ -436,7 +449,7 @@ s.mytasklist = awful.widget.tasklist {
          --   layout = wibox.layout.fixed.horizontal,
          --   mylauncher,
        -- },
-        s.mytasklist, -- Middle widget
+        nil,--s.mytasklist, -- Middle widget
         nil,
     }
 end

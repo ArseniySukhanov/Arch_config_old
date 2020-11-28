@@ -47,7 +47,7 @@ do
     end)
 end
 -- }}}
-
+awesome.set_preferred_icon_size(dpi(22))
 -- {{{ Autostart windowless processes
 
 -- This function will run once every time Awesome is started
@@ -57,7 +57,7 @@ local function run_once(cmd_arr)
     end
 end
 
-run_once({ "alacritty", "unclutter -root" }) -- entries must be separated by commas
+--run_once({ "alacritty", "unclutter -root" }) -- entries must be separated by commas
 
 -- This function implements the XDG autostart specification
 --[[
@@ -84,9 +84,12 @@ local themes = {
     "rainbow",         -- 8
     "steamburn",       -- 9
     "vertex",          -- 10
+    "mytheme"	       -- 11
 }
 
-local chosen_theme = themes[4]
+local chosen_theme = themes[11]
+beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme))
+
 local modkey       = "Mod4"
 local altkey       = "Mod1"
 local terminal     = "alacritty"
@@ -94,7 +97,7 @@ local vi_focus     = false -- vi-like client focus - https://github.com/lcpz/awe
 local cycle_prev   = true -- cycle trough all previous client or just the first -- https://github.com/lcpz/awesome-copycats/issues/274
 local editor       = os.getenv("EDITOR") or "vim"
 local gui_editor   = os.getenv("GUI_EDITOR") or "gvim"
-local browser      = os.getenv("BROWSER") or "chromium"
+local browser      = os.getenv("BROWSER") or "google-chrome-stable" -- "chromium"
 local scrlocker    = "slock"
 
 awful.util.terminal = terminal
@@ -123,6 +126,28 @@ awful.layout.layouts = {
     --lain.layout.termfair,
     --lain.layout.termfair.center,
 }
+
+-- Helper functions
+-- Add a clicable effect to a widget by changing the cursor on mouse::enter and mouse::leave 
+function add_clicable_effect(w)
+	local original_cursor = "left_ptr"
+	local hover_cursor = "hand1"
+
+	w:connect_signal("mouse::enter", function ()
+		local w = _G.mouse.current_wibox
+		if w then
+			w.cursor = hover_cursor
+		end
+	end)
+
+	w:connect_signal("mouse::leave",function ()
+		local w = _G.mouse.current_wibox
+		if w then
+			w.cursor = original_cursor
+		end
+	end)
+end
+---
 
 awful.util.taglist_buttons = my_table.join(
     awful.button({ }, 1, function(t) t:view_only() end),
@@ -188,7 +213,7 @@ lain.layout.cascade.tile.extra_padding = dpi(5)
 lain.layout.cascade.tile.nmaster       = 5
 lain.layout.cascade.tile.ncol          = 2
 
-beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme))
+
 -- }}}
 
 -- {{{ Menu
@@ -201,7 +226,7 @@ local myawesomemenu = {
 }
 
 local internetmenu = {
-	{"Browser", "chromium"},
+	{"Browser", "firefox"},
 	{"Discord", "discord"}
 }
 
@@ -210,17 +235,18 @@ local multimedia = {
 	{"VLC", "vlc"}
 }
 
-awful.util.mymainmenu = awful.menu({items = {{"Awesome", myawesomemenu, beautiful.awesome_icon},{"Terminal", terminal},{"Internet", internetmenu},{"Multimedia", multimedia}}}) --freedesktop.menu.build({
-    --icon_size = beautiful.menu_height or dpi(16),
-    --before = {
-      --  { "Awesome", myawesomemenu, beautiful.awesome_icon },
+--awful.util.mymainmenu = awful.menu({items = {{"Awesome", myawesomemenu, beautiful.awesome_icon},{"Terminal", terminal},{"Internet", internetmenu},{"Multimedia", multimedia}}}) 
+awful.util.mymainmenu = freedesktop.menu.build({
+    icon_size = beautiful.menu_height or dpi(16),
+    before = {
+        { "Awesome", myawesomemenu, beautiful.awesome_icon },
         -- other triads can be put here
-   -- },
-   -- after = {
-     --   { "Open terminal", terminal },
+   },
+    after = {
+        { "Open terminal", terminal },
         -- other triads can be put here
-   -- }
---})
+    }
+})
 -- hide menu when mouse leaves it and sub-menus
 awful.util.mymainmenu.wibox:connect_signal("mouse::leave", function() if awful.util.mymainmenu.active_child then
 		awful.util.mymainmenu.active_child.wibox:connect_signal("mouse::leave",function() awful.util.mymainmenu:hide() end)
@@ -719,7 +745,6 @@ client.connect_signal("manage", function (c)
     -- Set the windows at the slave,
     -- i.e. put it at the end of others instead of setting it master.
     -- if not awesome.startup then awful.client.setslave(c) end
-
     if awesome.startup and
       not c.size_hints.user_position
       and not c.size_hints.program_position then
@@ -752,7 +777,7 @@ client.connect_signal("request::titlebars", function(c)
 
     awful.titlebar(c, {size = dpi(16)}) : setup {
         { -- Left
-            awful.titlebar.widget.iconwidget(c),
+          --awful.titlebar.widget.iconwidget(c),
             buttons = buttons,
             layout  = wibox.layout.fixed.horizontal
         },
@@ -765,11 +790,11 @@ client.connect_signal("request::titlebars", function(c)
             layout  = wibox.layout.flex.horizontal
         },
         { -- Right
-            awful.titlebar.widget.floatingbutton (c),
-            awful.titlebar.widget.maximizedbutton(c),
-            awful.titlebar.widget.stickybutton   (c),
-            awful.titlebar.widget.ontopbutton    (c),
-            awful.titlebar.widget.closebutton    (c),
+        --    awful.titlebar.widget.floatingbutton (c),
+        --    awful.titlebar.widget.maximizedbutton(c),
+        --    awful.titlebar.widget.stickybutton   (c),
+        --    awful.titlebar.widget.ontopbutton    (c),
+        --    awful.titlebar.widget.closebutton    (c),
             layout = wibox.layout.fixed.horizontal()
         },
         layout = wibox.layout.align.horizontal
